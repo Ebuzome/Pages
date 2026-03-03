@@ -7,6 +7,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+    <!-- Three.js for true 3D monolith -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
         * {
             font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -22,7 +24,7 @@
             overflow-x: hidden;
         }
 
-        /* ===== ARCHITECTURAL FRAME - GOLDEN RATIO PRECISION ===== */
+        /* ===== BURJ KHALIFA ARCHITECTURAL FRAME ===== */
         .arch-frame {
             position: fixed;
             top: 0;
@@ -31,236 +33,166 @@
             height: 100vh;
             pointer-events: none;
             z-index: 2;
-            opacity: 0.7;
+            opacity: 0.8;
         }
 
-        /* Golden ratio constants */
-        :root {
-            --φ: 1.618;
-            --base-unit: min(5vw, 80px);
-        }
-
-        /* Outer frame - most subtle */
-        .frame-outer {
+        /* Vertical mullions - like Burj Khalifa */
+        .vertical-mullion {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: min(90vw, 900px);
-            height: calc(min(90vw, 900px) / 1.618);
-            border: 1px solid rgba(0,0,0,0.15);
-            box-shadow: 0 0 30px rgba(0,0,0,0.02);
+            top: 0;
+            width: 1px;
+            height: 100%;
+            background: linear-gradient(180deg, 
+                transparent 0%,
+                #111 15%,
+                #888 50%,
+                #111 85%,
+                transparent 100%
+            );
+            transform-origin: center;
         }
 
-        /* Middle frame - structural */
-        .frame-mid {
+        /* Horizontal bands - structural floors */
+        .horizontal-band {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: calc(min(90vw, 900px) * 0.85);
-            height: calc((min(90vw, 900px) / 1.618) * 0.85);
-            border: 1px solid rgba(0,0,0,0.25);
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg,
+                transparent 0%,
+                #111 20%,
+                #00A86B 50%,
+                #111 80%,
+                transparent 100%
+            );
+            opacity: 0.3;
         }
 
-        /* Inner frame - most prominent */
-        .frame-inner {
+        /* Green accent lines - wealth signature */
+        .green-accent {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: calc(min(90vw, 900px) * 0.7);
-            height: calc((min(90vw, 900px) / 1.618) * 0.7);
-            border: 1.5px solid rgba(0,0,0,0.35);
+            width: 2px;
+            height: 30%;
+            background: #00A86B;
+            opacity: 0.3;
+            filter: blur(1px);
+            animation: greenPulse 4s ease-in-out infinite;
         }
 
-        /* Corner details - 45° cuts */
-        .corner {
+        @keyframes greenPulse {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Corner anchors - architectural details */
+        .corner-anchor {
             position: absolute;
-            width: calc(var(--base-unit) * 0.5);
-            height: calc(var(--base-unit) * 0.5);
+            width: 20px;
+            height: 20px;
             border-style: solid;
-            border-color: rgba(0,0,0,0.3);
-            border-width: 0;
+            border-color: #00A86B;
+            border-width: 2px 0 0 2px;
+            opacity: 0.4;
         }
 
-        .corner-tl {
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) translate(calc(min(90vw, 900px) * -0.35), calc((min(90vw, 900px) / -1.618) * 0.35));
-            border-top: 1.5px solid rgba(0,0,0,0.4);
-            border-left: 1.5px solid rgba(0,0,0,0.4);
+        .corner-anchor.tr {
+            top: 10%;
+            right: 10%;
+            transform: rotate(90deg);
         }
 
-        .corner-tr {
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) translate(calc(min(90vw, 900px) * 0.35), calc((min(90vw, 900px) / -1.618) * 0.35));
-            border-top: 1.5px solid rgba(0,0,0,0.4);
-            border-right: 1.5px solid rgba(0,0,0,0.4);
+        .corner-anchor.bl {
+            bottom: 10%;
+            left: 10%;
+            transform: rotate(180deg);
         }
 
-        .corner-bl {
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) translate(calc(min(90vw, 900px) * -0.35), calc((min(90vw, 900px) / 1.618) * 0.35));
-            border-bottom: 1.5px solid rgba(0,0,0,0.4);
-            border-left: 1.5px solid rgba(0,0,0,0.4);
-        }
-
-        .corner-br {
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) translate(calc(min(90vw, 900px) * 0.35), calc((min(90vw, 900px) / 1.618) * 0.35));
-            border-bottom: 1.5px solid rgba(0,0,0,0.4);
-            border-right: 1.5px solid rgba(0,0,0,0.4);
-        }
-
-        /* Vertex glows - pulse with step */
-        .vertex-glow {
-            position: absolute;
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: rgba(0,0,0,0.5);
-            filter: blur(2px);
-            transition: all 0.5s;
-        }
-
-        .vertex-1 { top: 50%; left: 50%; transform: translate(-50%, -50%) translate(calc(min(90vw, 900px) * -0.35), calc((min(90vw, 900px) / -1.618) * 0.35)); }
-        .vertex-2 { top: 50%; left: 50%; transform: translate(-50%, -50%) translate(calc(min(90vw, 900px) * 0.35), calc((min(90vw, 900px) / -1.618) * 0.35)); }
-        .vertex-3 { top: 50%; left: 50%; transform: translate(-50%, -50%) translate(calc(min(90vw, 900px) * -0.35), calc((min(90vw, 900px) / 1.618) * 0.35)); }
-        .vertex-4 { top: 50%; left: 50%; transform: translate(-50%, -50%) translate(calc(min(90vw, 900px) * 0.35), calc((min(90vw, 900px) / 1.618) * 0.35)); }
-
-        /* ===== MONOLITH - EVOLVING 3D SCULPTURE ===== */
+        /* ===== THREE.JS MONOLITH CONTAINER ===== */
         .monolith-container {
             position: fixed;
             bottom: 5vh;
             right: 5vw;
             width: min(300px, 30vw);
             height: min(300px, 30vw);
-            perspective: 1000px;
-            z-index: 3;
+            z-index: 10;
             pointer-events: none;
-            opacity: 0.8;
+            opacity: 0.9;
         }
 
-        .monolith {
-            width: 100%;
-            height: 100%;
+        #monolith-canvas {
+            width: 100% !important;
+            height: 100% !important;
+            display: block;
+            border-radius: 4px;
+        }
+
+        /* ===== RESTORED SELECTION INDICATORS ===== */
+        .radio-card {
+            padding: clamp(1rem, 2.5vh, 1.5rem);
+            margin-bottom: 0.8rem;
+            background: white;
+            border: 1.5px solid #f0f0f0;
+            cursor: pointer;
+            transition: all 0.35s ease;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.5rem;
             position: relative;
-            transform-style: preserve-3d;
-            animation: rotateMonolith 40s linear infinite;
         }
 
-        /* Base cube structure (always present) */
-        .face {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border: 1.5px solid rgba(0,0,0,0.25);
-            background: rgba(255,255,255,0.02);
-            backdrop-filter: blur(2px);
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        .radio-card:hover {
+            border-color: #111;
+            transform: translateY(-2px);
+            box-shadow: 0 15px 25px -20px black;
         }
 
-        /* Cube faces */
-        .front  { transform: rotateY(0deg) translateZ(150px); }
-        .back   { transform: rotateY(180deg) translateZ(150px); }
-        .right  { transform: rotateY(90deg) translateZ(150px); }
-        .left   { transform: rotateY(-90deg) translateZ(150px); }
-        .top    { transform: rotateX(90deg) translateZ(150px); }
-        .bottom { transform: rotateX(-90deg) translateZ(150px); }
-
-        /* Additional geometric elements - step dependent */
-        .diagonal-strut {
-            position: absolute;
-            width: 2px;
-            height: 100%;
-            background: linear-gradient(180deg, transparent, rgba(0,0,0,0.3), transparent);
-            transform-origin: center;
-            opacity: 0;
-            transition: opacity 0.5s;
+        .radio-card.selected {
+            border-color: #00A86B;
+            background: #fff;
+            box-shadow: 0 20px 30px -25px #00A86B, inset 0 0 0 1px #00A86B;
         }
 
-        .strut-1 { transform: rotateX(45deg) rotateY(0deg) translateZ(100px); }
-        .strut-2 { transform: rotateX(-45deg) rotateY(0deg) translateZ(100px); }
-        .strut-3 { transform: rotateY(45deg) rotateX(0deg) translateZ(100px); }
-        .strut-4 { transform: rotateY(-45deg) rotateX(0deg) translateZ(100px); }
-
-        /* Step-based visibility */
-        .step-1 .strut { opacity: 0; }
-        .step-2 .strut { opacity: 0.3; }
-        .step-3 .strut { opacity: 0.6; }
-        .step-4 .strut { opacity: 1; }
-
-        /* Additional vertices for higher steps */
-        .vertex-3d {
-            position: absolute;
-            width: 6px;
-            height: 6px;
+        .custom-radio {
+            width: 1.4rem;
+            height: 1.4rem;
+            border: 2px solid #ccc;
             border-radius: 50%;
-            background: rgba(0,0,0,0.5);
-            filter: blur(1px);
-            transform-style: preserve-3d;
-            opacity: 0;
-            transition: opacity 0.5s;
+            display: inline-block;
+            margin-right: 1rem;
+            transition: all 0.25s;
+            position: relative;
         }
 
-        .step-3 .vertex-3d, .step-4 .vertex-3d { opacity: 0.6; }
-
-        @keyframes rotateMonolith {
-            0% { transform: rotateX(20deg) rotateY(0deg) rotateZ(0deg); }
-            100% { transform: rotateX(20deg) rotateY(360deg) rotateZ(0deg); }
+        .radio-card.selected .custom-radio {
+            border-color: #00A86B;
         }
 
-        /* floating orbs - subtle */
-        .orb {
-            position: fixed;
+        .radio-card.selected .custom-radio::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 0.8rem;
+            height: 0.8rem;
+            background: #00A86B;
             border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, rgba(0,0,0,0.02), transparent 70%);
-            filter: blur(60px);
-            z-index: 1;
-            pointer-events: none;
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .orb-1 {
-            width: 500px;
-            height: 500px;
-            top: -150px;
-            right: -150px;
-            animation: orbFloat 22s ease-in-out infinite alternate;
+        @keyframes popIn {
+            0% { transform: translate(-50%, -50%) scale(0); }
+            100% { transform: translate(-50%, -50%) scale(1); }
         }
 
-        .orb-2 {
-            width: 600px;
-            height: 600px;
-            bottom: -250px;
-            left: -200px;
-            animation: orbFloat 28s ease-in-out infinite alternate-reverse;
+        /* Green accent on selected goal icons */
+        .radio-card.selected i.ph {
+            color: #00A86B !important;
         }
 
-        @keyframes orbFloat {
-            0% { transform: translate(0, 0) scale(1); opacity: 0.3; }
-            100% { transform: translate(40px, 40px) scale(1.1); opacity: 0.6; }
-        }
-
-        /* grid layer - refined */
-        .grid-architecture {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: 
-                linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
-            background-size: min(60px, 8vw) min(60px, 8vw);
-            pointer-events: none;
-            z-index: 1;
-        }
-
-        /* main content - precisely positioned */
+        /* ===== REST OF YOUR STYLES ===== */
         .main-container {
             position: relative;
             z-index: 20;
@@ -273,7 +205,6 @@
             justify-content: center;
         }
 
-        /* MERGED TOP PANEL */
         .top-panel {
             position: fixed;
             top: max(1.2rem, 2vh);
@@ -290,30 +221,6 @@
             color: white;
         }
 
-        .panel-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 0.5rem;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
-
-        .no-hit-text {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: clamp(0.7rem, 2vw, 0.8rem);
-        }
-
-        .panel-progress {
-            width: 100%;
-            height: 3px;
-            background: rgba(255,255,255,0.15);
-            border-radius: 3px;
-            overflow: hidden;
-        }
-
         .panel-progress-fill {
             height: 3px;
             background: white;
@@ -322,7 +229,6 @@
             transition: width 0.8s cubic-bezier(0.2, 0.9, 0.3, 1);
         }
 
-        /* step wrapper */
         .step-wrapper {
             position: relative;
             width: 100%;
@@ -352,22 +258,6 @@
             filter: blur(0);
             position: relative;
             pointer-events: all;
-            box-shadow: 0 35px 70px -45px black, 0 0 0 1px rgba(0,0,0,0.02);
-        }
-
-        /* rest of your existing styles... */
-        .radio-card {
-            padding: clamp(1rem, 2.5vh, 1.5rem);
-            margin-bottom: 0.8rem;
-            background: white;
-            border: 1px solid #f0f0f0;
-            cursor: pointer;
-            transition: all 0.35s ease;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 0.5rem;
         }
 
         .btn-continue {
@@ -388,46 +278,19 @@
             gap: 1rem;
         }
 
-        /* Mobile-specific adjustments */
-        @media (max-width: 640px) {
-            .arch-frame {
-                opacity: 0.5; /* Slightly more subtle on mobile */
-            }
-            
-            .monolith-container {
-                bottom: 2vh;
-                right: 2vw;
-                width: min(150px, 25vw);
-                height: min(150px, 25vw);
-            }
-            
-            .frame-outer,
-            .frame-mid,
-            .frame-inner {
-                border-width: 0.5px;
-            }
-            
-            .corner {
-                border-width: 1px;
-            }
-            
-            .main-container {
-                padding-top: 7rem;
-                justify-content: flex-start;
-            }
-            
-            h1 {
-                font-size: clamp(1.8rem, 6vw, 2.3rem);
-            }
+        .btn-continue:hover {
+            background: #222;
+            transform: scale(1.02);
+            box-shadow: 0 25px 40px -20px black;
         }
 
-        /* Rest of your existing styles (keep all your form styles) */
         h1 {
             font-size: clamp(2rem, 5vw, 3rem);
             font-weight: 300;
             letter-spacing: -0.02em;
             line-height: 1.1;
             margin-bottom: 1.2rem;
+            color: #111;
         }
 
         .subhead {
@@ -437,81 +300,74 @@
             color: #666;
             margin-bottom: 2rem;
         }
+
+        @media (max-width: 640px) {
+            .monolith-container {
+                bottom: 2vh;
+                right: 2vw;
+                width: min(150px, 25vw);
+                height: min(150px, 25vw);
+            }
+            
+            .main-container {
+                padding-top: 7rem;
+            }
+        }
     </style>
 </head>
 <body>
-    <!-- ARCHITECTURAL FRAME - Golden ratio precision -->
-    <div class="arch-frame">
-        <div class="frame-outer"></div>
-        <div class="frame-mid"></div>
-        <div class="frame-inner"></div>
+    <!-- BURJ KHALIFA ARCHITECTURAL FRAME -->
+    <div class="arch-frame" id="archFrame">
+        <!-- Vertical mullions - 12 lines -->
+        <div class="vertical-mullion" style="left: 5%;"></div>
+        <div class="vertical-mullion" style="left: 15%;"></div>
+        <div class="vertical-mullion" style="left: 25%;"></div>
+        <div class="vertical-mullion" style="left: 35%;"></div>
+        <div class="vertical-mullion" style="left: 45%;"></div>
+        <div class="vertical-mullion" style="left: 55%;"></div>
+        <div class="vertical-mullion" style="left: 65%;"></div>
+        <div class="vertical-mullion" style="left: 75%;"></div>
+        <div class="vertical-mullion" style="left: 85%;"></div>
+        <div class="vertical-mullion" style="left: 95%;"></div>
         
-        <!-- Corner details - 45° cuts -->
-        <div class="corner corner-tl"></div>
-        <div class="corner corner-tr"></div>
-        <div class="corner corner-bl"></div>
-        <div class="corner corner-br"></div>
+        <!-- Horizontal bands - 3 levels -->
+        <div class="horizontal-band" style="top: 20%;"></div>
+        <div class="horizontal-band" style="top: 50%;"></div>
+        <div class="horizontal-band" style="top: 80%;"></div>
         
-        <!-- Vertex glows - pulse with progress -->
-        <div class="vertex-glow vertex-1" id="vertex1"></div>
-        <div class="vertex-glow vertex-2" id="vertex2"></div>
-        <div class="vertex-glow vertex-3" id="vertex3"></div>
-        <div class="vertex-glow vertex-4" id="vertex4"></div>
+        <!-- Green accent lines - wealth signature -->
+        <div class="green-accent" style="left: 30%; top: 20%;"></div>
+        <div class="green-accent" style="left: 60%; top: 50%;"></div>
+        <div class="green-accent" style="left: 45%; top: 70%;"></div>
+        
+        <!-- Corner anchors -->
+        <div class="corner-anchor tl" style="top: 10%; left: 10%;"></div>
+        <div class="corner-anchor tr" style="top: 10%; right: 10%;"></div>
+        <div class="corner-anchor bl" style="bottom: 10%; left: 10%;"></div>
+        <div class="corner-anchor br" style="bottom: 10%; right: 10%;"></div>
     </div>
 
-    <!-- MONOLITH - Evolving geometric sculpture -->
-    <div class="monolith-container" id="monolithContainer">
-        <div class="monolith" id="monolith">
-            <!-- Cube faces -->
-            <div class="face front"></div>
-            <div class="face back"></div>
-            <div class="face right"></div>
-            <div class="face left"></div>
-            <div class="face top"></div>
-            <div class="face bottom"></div>
-            
-            <!-- Diagonal struts - appear with steps -->
-            <div class="diagonal-strut strut-1"></div>
-            <div class="diagonal-strut strut-2"></div>
-            <div class="diagonal-strut strut-3"></div>
-            <div class="diagonal-strut strut-4"></div>
-            
-            <!-- Additional vertices -->
-            <div class="vertex-3d" style="transform: translate3d(150px, 150px, 150px);"></div>
-            <div class="vertex-3d" style="transform: translate3d(-150px, 150px, 150px);"></div>
-            <div class="vertex-3d" style="transform: translate3d(150px, -150px, 150px);"></div>
-            <div class="vertex-3d" style="transform: translate3d(-150px, -150px, 150px);"></div>
-            <div class="vertex-3d" style="transform: translate3d(150px, 150px, -150px);"></div>
-            <div class="vertex-3d" style="transform: translate3d(-150px, 150px, -150px);"></div>
-            <div class="vertex-3d" style="transform: translate3d(150px, -150px, -150px);"></div>
-            <div class="vertex-3d" style="transform: translate3d(-150px, -150px, -150px);"></div>
-        </div>
+    <!-- THREE.JS MONOLITH CONTAINER -->
+    <div class="monolith-container" id="monolith-container">
+        <canvas id="monolith-canvas"></canvas>
     </div>
 
-    <!-- floating orbs -->
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
-    
-    <!-- grid layer -->
-    <div class="grid-architecture"></div>
-
-    <!-- MERGED TOP PANEL -->
+    <!-- TOP PANEL -->
     <div class="top-panel">
-        <div class="panel-row">
-            <div class="no-hit-text">
-                <i class="ph ph-shield-check"></i>
-                <span><strong>NO CREDIT IMPACT</strong> · soft inquiry only</span>
+        <div class="flex items-center justify-between mb-2 flex-wrap gap-2">
+            <div class="flex items-center gap-2 text-sm">
+                <i class="ph ph-shield-check text-gray-400"></i>
+                <span class="text-white"><strong>NO CREDIT IMPACT</strong> · soft inquiry only</span>
             </div>
-            <div class="step-indicator-mini" id="stepText">Step 1/4</div>
+            <div class="text-gray-400 text-sm" id="stepText">Step 1/4</div>
         </div>
         <div class="panel-progress">
             <div class="panel-progress-fill" id="progressFill" style="width: 25%;"></div>
         </div>
     </div>
 
-    <!-- main content -->
+    <!-- MAIN CONTENT -->
     <div class="main-container">
-        <!-- step wrapper -->
         <div class="step-wrapper" id="stepWrapper">
             <!-- STEP 1 -->
             <div class="step active" id="step1">
@@ -550,7 +406,6 @@
                     </div>
                 </div>
 
-                <!-- credit bar -->
                 <div class="mt-8">
                     <div class="h-0.5 w-full bg-gray-100">
                         <div class="h-0.5 bg-black" id="creditBar" style="width: 90%;"></div>
@@ -616,34 +471,24 @@
                 <div class="subhead">financial fingerprint</div>
 
                 <div class="space-y-6">
-                    <div class="input-group">
-                        <span class="currency">$</span>
-                        <input type="text" id="debt" placeholder=" " value="45,000">
-                        <label for="debt">Total debt</label>
+                    <div class="relative border-b border-gray-200">
+                        <span class="absolute left-0 bottom-3 text-gray-500">$</span>
+                        <input type="text" id="debt" placeholder=" " value="45,000" class="w-full border-none pl-6 pb-2 pt-2 text-xl outline-none">
+                        <label for="debt" class="absolute left-6 top-2 text-gray-400 text-sm transition-all pointer-events-none">Total debt</label>
                     </div>
 
                     <div>
                         <p class="text-sm text-gray-500 mb-3">Are you a homeowner?</p>
-                        <div class="toggle-group">
-                            <span class="toggle-option active" id="homeYes">Yes</span>
-                            <span class="toggle-option" id="homeNo">No</span>
+                        <div class="flex border border-gray-200 w-fit">
+                            <span class="px-8 py-3 cursor-pointer bg-black text-white" id="homeYes">Yes</span>
+                            <span class="px-8 py-3 cursor-pointer" id="homeNo">No</span>
                         </div>
                     </div>
 
-                    <div class="input-group">
-                        <span class="currency">$</span>
-                        <input type="text" id="income" placeholder=" " value="8,200">
-                        <label for="income">Monthly income</label>
-                    </div>
-
-                    <!-- dti indicator -->
-                    <div class="mt-4">
-                        <div class="h-0.5 w-full bg-gray-100">
-                            <div class="h-0.5 bg-black" style="width: 38%;"></div>
-                        </div>
-                        <p class="text-[0.6rem] text-gray-500 flex justify-between mt-1">
-                            <span>debt/income ratio</span><span>38% · healthy</span>
-                        </p>
+                    <div class="relative border-b border-gray-200">
+                        <span class="absolute left-0 bottom-3 text-gray-500">$</span>
+                        <input type="text" id="income" placeholder=" " value="8,200" class="w-full border-none pl-6 pb-2 pt-2 text-xl outline-none">
+                        <label for="income" class="absolute left-6 top-2 text-gray-400 text-sm transition-all pointer-events-none">Monthly income</label>
                     </div>
                 </div>
             </div>
@@ -654,7 +499,6 @@
                 <div class="subhead">final review</div>
                 <p class="text-gray-500 mb-8 text-sm">Our team is reviewing your profile against active capital-raising programs in Washington.</p>
 
-                <!-- summary card -->
                 <div class="bg-gray-50 p-6 mb-8 border border-gray-100">
                     <div class="flex items-center gap-4">
                         <i class="ph ph-file-text text-2xl text-gray-500"></i>
@@ -665,15 +509,13 @@
                     </div>
                 </div>
 
-                <!-- encryption badge -->
                 <div class="flex items-center gap-2 text-xs text-gray-500 mb-8">
                     <i class="ph ph-lock"></i>
-                    <span>256-bit encryption · never shared with third parties</span>
+                    <span>256-bit encryption · never shared</span>
                 </div>
             </div>
         </div>
 
-        <!-- BOLD BUTTON CONTAINER -->
         <div class="button-container">
             <button class="btn-continue" id="nextBtn">
                 <span>Continue</span>
@@ -681,13 +523,122 @@
             </button>
         </div>
 
-        <!-- back button -->
         <div class="flex justify-center mt-4">
-            <button class="nav-btn" id="prevBtn" disabled>← Back</button>
+            <button class="text-sm text-gray-400 hover:text-black px-4 py-2 disabled:opacity-20" id="prevBtn" disabled>← Back</button>
         </div>
     </div>
 
     <script>
+        // THREE.JS MONOLITH
+        (function() {
+            const container = document.getElementById('monolith-container');
+            const canvas = document.getElementById('monolith-canvas');
+            
+            // Scene setup
+            const scene = new THREE.Scene();
+            scene.background = null; // transparent
+            
+            const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 1000);
+            camera.position.set(2, 1.5, 3);
+            camera.lookAt(0, 0, 0);
+            
+            const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+            renderer.setSize(300, 300);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            
+            // Lighting
+            const ambientLight = new THREE.AmbientLight(0x404040);
+            scene.add(ambientLight);
+            
+            const dirLight = new THREE.DirectionalLight(0xffffff, 1);
+            dirLight.position.set(1, 2, 1);
+            scene.add(dirLight);
+            
+            const backLight = new THREE.DirectionalLight(0x444444, 0.5);
+            backLight.position.set(-1, -1, -1);
+            scene.add(backLight);
+            
+            // Materials
+            const metalMaterial = new THREE.MeshStandardMaterial({
+                color: 0x222222,
+                emissive: 0x111111,
+                roughness: 0.3,
+                metalness: 0.8,
+                emissiveIntensity: 0.2
+            });
+            
+            const edgeMaterial = new THREE.LineBasicMaterial({ color: 0x00A86B });
+            
+            // Geometry holder
+            let currentMesh = null;
+            let currentEdges = null;
+            
+            // Step geometries
+            function createGeometry(step) {
+                if (currentMesh) scene.remove(currentMesh);
+                if (currentEdges) scene.remove(currentEdges);
+                
+                let geometry;
+                
+                switch(step) {
+                    case 1: // Simple cube
+                        geometry = new THREE.BoxGeometry(1.2, 1.2, 1.2);
+                        break;
+                    case 2: // Icosahedron (more complex)
+                        geometry = new THREE.IcosahedronGeometry(0.9, 0);
+                        break;
+                    case 3: // Torus knot (growth & opportunity)
+                        geometry = new THREE.TorusKnotGeometry(0.6, 0.2, 64, 8, 2, 3);
+                        break;
+                    case 4: // Complex geometric form
+                        geometry = new THREE.OctahedronGeometry(0.9, 1);
+                        break;
+                    default:
+                        geometry = new THREE.BoxGeometry(1.2, 1.2, 1.2);
+                }
+                
+                // Main mesh
+                currentMesh = new THREE.Mesh(geometry, metalMaterial);
+                currentMesh.castShadow = true;
+                currentMesh.receiveShadow = true;
+                scene.add(currentMesh);
+                
+                // Edges (green highlights)
+                const edges = new THREE.EdgesGeometry(geometry);
+                currentEdges = new THREE.LineSegments(edges, edgeMaterial);
+                currentMesh.add(currentEdges); // Add edges as child so they move together
+            }
+            
+            // Initialize with step 1
+            createGeometry(1);
+            
+            // Animation
+            function animate() {
+                requestAnimationFrame(animate);
+                
+                if (currentMesh) {
+                    currentMesh.rotation.y += 0.005;
+                    currentMesh.rotation.x += 0.002;
+                }
+                
+                renderer.render(scene, camera);
+            }
+            
+            animate();
+            
+            // Handle resize
+            window.addEventListener('resize', () => {
+                const size = Math.min(300, window.innerWidth * 0.3);
+                renderer.setSize(size, size);
+                camera.aspect = 1;
+                camera.updateProjectionMatrix();
+            });
+            
+            // Expose for step changes
+            window.monolith = { createGeometry };
+        })();
+
+        // Form functionality
         (function() {
             let currentStep = 1;
             const steps = {
@@ -701,68 +652,41 @@
             const stepText = document.getElementById('stepText');
             const prevBtn = document.getElementById('prevBtn');
             const nextBtn = document.getElementById('nextBtn');
-            const monolith = document.getElementById('monolithContainer');
-            const vertices = [
-                document.getElementById('vertex1'),
-                document.getElementById('vertex2'),
-                document.getElementById('vertex3'),
-                document.getElementById('vertex4')
-            ];
 
-            // default selections
-            let selectedScore = '740';
-            let selectedGoal = 'credit';
-            let homeOwner = true;
-
-            // initialize selections
+            // Initialize selections
             document.querySelector('#step1 .radio-card').classList.add('selected');
             document.getElementById('creditBar').style.width = '90%';
+            
+            // Pre-select first goal
             const goalCards = document.querySelectorAll('#step2 .radio-card');
             if (goalCards.length) goalCards[0].classList.add('selected');
-
-            function updateMonolith(step) {
-                // Remove previous step classes
-                monolith.classList.remove('step-1', 'step-2', 'step-3', 'step-4');
-                monolith.classList.add(`step-${step}`);
-                
-                // Update vertex glows intensity
-                vertices.forEach((v, index) => {
-                    const intensity = step / 4;
-                    v.style.transform = `translate(-50%, -50%) translate(calc(min(90vw, 900px) * ${index < 2 ? '-0.35' : '0.35'}), calc((min(90vw, 900px) / ${index % 2 === 0 ? '-' : ''}1.618) * 0.35)) scale(${1 + intensity * 0.5})`;
-                    v.style.background = `rgba(0,0,0,${0.3 + intensity * 0.3})`;
-                    v.style.filter = `blur(${2 + intensity * 2}px)`;
-                });
-            }
 
             function goToStep(newStep) {
                 if (newStep < 1 || newStep > 4) return;
 
-                // remove all special classes
                 Object.values(steps).forEach(s => {
                     s.classList.remove('active', 'exit-left');
                 });
 
-                // apply exit animation
                 steps[currentStep].classList.add('exit-left');
 
-                // activate new step after short delay
                 setTimeout(() => {
                     Object.values(steps).forEach(s => s.classList.remove('exit-left'));
                     steps[newStep].classList.add('active');
                 }, 60);
 
-                // update UI
                 currentStep = newStep;
                 const percent = (currentStep / 4) * 100;
                 progressFill.style.width = percent + '%';
                 stepText.textContent = `Step ${currentStep}/4`;
                 
-                // Update monolith
-                updateMonolith(currentStep);
+                // Update monolith geometry
+                if (window.monolith) {
+                    window.monolith.createGeometry(currentStep);
+                }
 
                 prevBtn.disabled = currentStep === 1;
 
-                // update button text on last step
                 if (currentStep === 4) {
                     nextBtn.innerHTML = '<span>Submit request</span><i class="ph ph-check"></i>';
                 } else {
@@ -770,7 +694,7 @@
                 }
             }
 
-            // radio listeners
+            // Radio card selection
             document.querySelectorAll('.radio-card').forEach(card => {
                 card.addEventListener('click', function() {
                     const parentStep = this.closest('.step');
@@ -780,32 +704,28 @@
                     this.classList.add('selected');
 
                     if (parentStep.id === 'step1') {
-                        selectedScore = this.dataset.score;
+                        const score = this.dataset.score;
                         let width = '0%';
-                        if (selectedScore === '740') width = '90%';
-                        else if (selectedScore === '680') width = '70%';
-                        else if (selectedScore === '620') width = '40%';
+                        if (score === '740') width = '90%';
+                        else if (score === '680') width = '70%';
+                        else if (score === '620') width = '40%';
                         else width = '15%';
                         document.getElementById('creditBar').style.width = width;
-                    } else if (parentStep.id === 'step2') {
-                        selectedGoal = this.dataset.goal;
                     }
                 });
             });
 
-            // toggle
+            // Toggle
             document.getElementById('homeYes').addEventListener('click', function() {
-                this.classList.add('active');
-                document.getElementById('homeNo').classList.remove('active');
-                homeOwner = true;
+                this.classList.add('bg-black', 'text-white');
+                document.getElementById('homeNo').classList.remove('bg-black', 'text-white');
             });
             document.getElementById('homeNo').addEventListener('click', function() {
-                this.classList.add('active');
-                document.getElementById('homeYes').classList.remove('active');
-                homeOwner = false;
+                this.classList.add('bg-black', 'text-white');
+                document.getElementById('homeYes').classList.remove('bg-black', 'text-white');
             });
 
-            // navigation
+            // Navigation
             nextBtn.addEventListener('click', () => {
                 if (currentStep < 4) {
                     if (currentStep === 1 && !document.querySelector('#step1 .radio-card.selected')) {
@@ -818,7 +738,6 @@
                     }
                     goToStep(currentStep + 1);
                 } else {
-                    // final submit
                     nextBtn.innerHTML = '<span>Processing...</span><i class="ph ph-spinner ph-spin"></i>';
                     setTimeout(() => {
                         alert('Form submitted (demo) — thank you');
@@ -831,9 +750,7 @@
                 if (currentStep > 1) goToStep(currentStep - 1);
             });
 
-            // initialize
             goToStep(1);
-            updateMonolith(1);
         })();
     </script>
 </body>

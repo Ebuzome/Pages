@@ -2,212 +2,144 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>ÆTHOS · capital intake</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
-    <!-- Three.js for true 3D monolith -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
     <style>
+        /* ===== RESET & BASE ===== */
         * {
-            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
         body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
             background: #fcfcfc;
             min-height: 100vh;
             position: relative;
-            overflow-x: hidden;
+            color: #111;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
-        /* ===== BURJ KHALIFA ARCHITECTURAL FRAME ===== */
-        .arch-frame {
+        /* ===== GEOMETRIC BACKGROUND PATTERNS ===== */
+        .geometric-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #fcfcfc;
+            background-image: 
+                repeating-linear-gradient(60deg, 
+                    rgba(17, 17, 17, 0.05) 0px, 
+                    rgba(17, 17, 17, 0.05) 1px, 
+                    transparent 1px, 
+                    transparent 60px),
+                repeating-linear-gradient(-60deg, 
+                    rgba(17, 17, 17, 0.04) 0px, 
+                    rgba(17, 17, 17, 0.04) 1px, 
+                    transparent 1px, 
+                    transparent 60px),
+                repeating-linear-gradient(45deg, 
+                    rgba(230, 126, 34, 0.03) 0px, 
+                    rgba(230, 126, 34, 0.03) 1px, 
+                    transparent 1px, 
+                    transparent 80px),
+                repeating-linear-gradient(0deg, 
+                    rgba(102, 102, 102, 0.03) 0px, 
+                    rgba(102, 102, 102, 0.03) 1px, 
+                    transparent 1px, 
+                    transparent 24px),
+                radial-gradient(circle at 15% 22%, rgba(17, 17, 17, 0.08) 1.5px, transparent 1.5px),
+                radial-gradient(circle at 72% 45%, rgba(230, 126, 34, 0.06) 2px, transparent 2px),
+                radial-gradient(circle at 83% 68%, rgba(102, 102, 102, 0.06) 2px, transparent 2px),
+                radial-gradient(circle at 20% 30%, rgba(230, 126, 34, 0.02) 0%, transparent 60%);
+            
+            background-size: 
+                120px 120px, 120px 120px,
+                160px 160px,
+                48px 48px,
+                400px 400px, 400px 400px, 400px 400px,
+                100% 100%;
+            
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Floating particles */
+        .floating-particles {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
             pointer-events: none;
-            z-index: 2;
-            opacity: 0.8;
+            z-index: 1;
+            overflow: hidden;
         }
 
-        /* Vertical mullions - like Burj Khalifa */
-        .vertical-mullion {
+        .particle {
             position: absolute;
-            top: 0;
-            width: 1px;
-            height: 100%;
-            background: linear-gradient(180deg, 
-                transparent 0%,
-                #111 15%,
-                #888 50%,
-                #111 85%,
-                transparent 100%
-            );
-            transform-origin: center;
+            width: 120px;
+            height: 120px;
+            opacity: 0.05;
+            filter: drop-shadow(0 0 10px rgba(230, 126, 34, 0.1));
+            animation: floatParticle 20s infinite linear;
         }
 
-        /* Horizontal bands - structural floors */
-        .horizontal-band {
-            position: absolute;
-            left: 0;
+        .particle svg {
             width: 100%;
-            height: 1px;
-            background: linear-gradient(90deg,
-                transparent 0%,
-                #111 20%,
-                #00A86B 50%,
-                #111 80%,
-                transparent 100%
-            );
-            opacity: 0.3;
+            height: 100%;
+            fill: none;
+            stroke: #111;
+            stroke-width: 0.8;
         }
 
-        /* Green accent lines - wealth signature */
-        .green-accent {
-            position: absolute;
-            width: 2px;
-            height: 30%;
-            background: #00A86B;
-            opacity: 0.3;
-            filter: blur(1px);
-            animation: greenPulse 4s ease-in-out infinite;
+        .particle.orange svg {
+            stroke: #E67E22;
         }
 
-        @keyframes greenPulse {
-            0%, 100% { opacity: 0.2; }
-            50% { opacity: 0.5; }
+        .particle.grey svg {
+            stroke: #666;
         }
 
-        /* Corner anchors - architectural details */
-        .corner-anchor {
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            border-style: solid;
-            border-color: #00A86B;
-            border-width: 2px 0 0 2px;
-            opacity: 0.4;
+        .particle:nth-child(1) { top: 15%; left: 5%; animation: floatParticle 25s infinite reverse; }
+        .particle:nth-child(2) { top: 70%; left: 85%; animation: floatParticle 30s infinite; }
+        .particle:nth-child(3) { top: 45%; left: 15%; animation: floatParticle 22s infinite reverse; }
+        .particle:nth-child(4) { top: 80%; left: 20%; animation: floatParticle 28s infinite; }
+
+        @keyframes floatParticle {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(30px, -20px) rotate(5deg); }
+            50% { transform: translate(-20px, 40px) rotate(-3deg); }
+            75% { transform: translate(25px, -30px) rotate(7deg); }
+            100% { transform: translate(0, 0) rotate(0deg); }
         }
 
-        .corner-anchor.tr {
-            top: 10%;
-            right: 10%;
-            transform: rotate(90deg);
-        }
-
-        .corner-anchor.bl {
-            bottom: 10%;
-            left: 10%;
-            transform: rotate(180deg);
-        }
-
-        /* ===== THREE.JS MONOLITH CONTAINER ===== */
-        .monolith-container {
-            position: fixed;
-            bottom: 5vh;
-            right: 5vw;
-            width: min(300px, 30vw);
-            height: min(300px, 30vw);
-            z-index: 10;
-            pointer-events: none;
-            opacity: 0.9;
-        }
-
-        #monolith-canvas {
-            width: 100% !important;
-            height: 100% !important;
-            display: block;
-            border-radius: 4px;
-        }
-
-        /* ===== RESTORED SELECTION INDICATORS ===== */
-        .radio-card {
-            padding: clamp(1rem, 2.5vh, 1.5rem);
-            margin-bottom: 0.8rem;
-            background: white;
-            border: 1.5px solid #f0f0f0;
-            cursor: pointer;
-            transition: all 0.35s ease;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            position: relative;
-        }
-
-        .radio-card:hover {
-            border-color: #111;
-            transform: translateY(-2px);
-            box-shadow: 0 15px 25px -20px black;
-        }
-
-        .radio-card.selected {
-            border-color: #00A86B;
-            background: #fff;
-            box-shadow: 0 20px 30px -25px #00A86B, inset 0 0 0 1px #00A86B;
-        }
-
-        .custom-radio {
-            width: 1.4rem;
-            height: 1.4rem;
-            border: 2px solid #ccc;
-            border-radius: 50%;
-            display: inline-block;
-            margin-right: 1rem;
-            transition: all 0.25s;
-            position: relative;
-        }
-
-        .radio-card.selected .custom-radio {
-            border-color: #00A86B;
-        }
-
-        .radio-card.selected .custom-radio::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 0.8rem;
-            height: 0.8rem;
-            background: #00A86B;
-            border-radius: 50%;
-            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        @keyframes popIn {
-            0% { transform: translate(-50%, -50%) scale(0); }
-            100% { transform: translate(-50%, -50%) scale(1); }
-        }
-
-        /* Green accent on selected goal icons */
-        .radio-card.selected i.ph {
-            color: #00A86B !important;
-        }
-
-        /* ===== REST OF YOUR STYLES ===== */
+        /* ===== MAIN CONTAINER ===== */
         .main-container {
             position: relative;
             z-index: 20;
-            max-width: min(720px, 90vw);
+            max-width: min(720px, 90%);
             margin: 0 auto;
-            padding: min(8rem, 15vh) min(1.5rem, 3vw) min(4rem, 8vh);
+            padding: 2rem 1rem;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
         }
 
+        /* ===== MERGED TOP PANEL ===== */
         .top-panel {
             position: fixed;
-            top: max(1.2rem, 2vh);
+            top: 1.2rem;
             left: 50%;
             transform: translateX(-50%);
             width: min(680px, 90%);
@@ -216,24 +148,66 @@
             backdrop-filter: blur(16px);
             border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 60px;
-            padding: clamp(0.6rem, 1.5vh, 0.8rem) clamp(1.2rem, 3vw, 1.8rem) clamp(0.8rem, 1.8vh, 1rem);
+            padding: 0.8rem 1.8rem 1rem;
             box-shadow: 0 20px 40px -15px rgba(0,0,0,0.4);
             color: white;
         }
 
+        .panel-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .no-hit-text {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: clamp(0.7rem, 2vw, 0.8rem);
+        }
+
+        .no-hit-text i {
+            font-size: 1.1rem;
+            color: #E67E22;
+        }
+
+        .no-hit-text strong {
+            font-weight: 600;
+            color: white;
+        }
+
+        .step-indicator-mini {
+            font-size: 0.7rem;
+            color: #aaa;
+            letter-spacing: 0.1em;
+        }
+
+        .panel-progress {
+            width: 100%;
+            height: 3px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
         .panel-progress-fill {
             height: 3px;
-            background: white;
+            background: #E67E22;
             width: 25%;
             border-radius: 3px;
             transition: width 0.8s cubic-bezier(0.2, 0.9, 0.3, 1);
         }
 
+        /* ===== STEP WRAPPER ===== */
         .step-wrapper {
             position: relative;
             width: 100%;
-            min-height: min(480px, 70vh);
-            margin-bottom: 2rem;
+            min-height: 480px;
+            margin: 5rem 0 2rem;
+            perspective: 1200px;
         }
 
         .step {
@@ -258,6 +232,148 @@
             filter: blur(0);
             position: relative;
             pointer-events: all;
+            box-shadow: 0 35px 70px -45px black, 0 0 0 1px rgba(0,0,0,0.02);
+        }
+
+        .step.exit-left {
+            opacity: 0;
+            transform: translateX(-70px) scale(0.97);
+            filter: blur(3px);
+            pointer-events: none;
+        }
+
+        /* ===== RADIO CARDS ===== */
+        .radio-card {
+            padding: 1.5rem;
+            margin-bottom: 0.8rem;
+            background: white;
+            border: 1.5px solid #f0f0f0;
+            cursor: pointer;
+            transition: all 0.35s ease;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            position: relative;
+        }
+
+        .radio-card:hover {
+            border-color: #E67E22;
+            transform: translateY(-2px);
+            box-shadow: 0 15px 25px -20px rgba(230,126,34,0.2);
+        }
+
+        .radio-card.selected {
+            border-color: #E67E22;
+            background: #fff;
+            box-shadow: 0 20px 30px -25px #E67E22, inset 0 0 0 1px #E67E22;
+        }
+
+        .custom-radio {
+            width: 1.4rem;
+            height: 1.4rem;
+            border: 2px solid #ccc;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 1rem;
+            transition: all 0.25s;
+            position: relative;
+        }
+
+        .radio-card.selected .custom-radio {
+            border-color: #E67E22;
+        }
+
+        .radio-card.selected .custom-radio::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 0.8rem;
+            height: 0.8rem;
+            background: #E67E22;
+            border-radius: 50%;
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popIn {
+            0% { transform: translate(-50%, -50%) scale(0); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+
+        /* ===== INPUT FIELDS ===== */
+        .input-group {
+            margin-bottom: 2.2rem;
+            position: relative;
+            border-bottom: 1.5px solid #ddd;
+        }
+
+        .input-group input {
+            width: 100%;
+            border: none;
+            padding: 0.8rem 0 0.8rem 1.5rem;
+            font-size: 1.3rem;
+            background: transparent;
+            outline: none;
+            font-weight: 400;
+        }
+
+        .input-group label {
+            position: absolute;
+            left: 1.5rem;
+            top: 0.8rem;
+            color: #666;
+            font-size: 1rem;
+            transition: all 0.2s;
+            pointer-events: none;
+        }
+
+        .input-group input:focus ~ label,
+        .input-group input:not(:placeholder-shown) ~ label {
+            top: -1.2rem;
+            left: 0;
+            font-size: 0.75rem;
+            color: #E67E22;
+            font-weight: 500;
+        }
+
+        .input-group .currency {
+            position: absolute;
+            left: 0;
+            bottom: 0.8rem;
+            color: #555;
+            font-size: 1.3rem;
+            font-weight: 400;
+        }
+
+        /* ===== TOGGLE ===== */
+        .toggle-group {
+            display: flex;
+            border: 1.5px solid #ddd;
+            background: white;
+            width: fit-content;
+        }
+
+        .toggle-option {
+            padding: 0.9rem 2.2rem;
+            cursor: pointer;
+            transition: all 0.25s;
+            color: #555;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .toggle-option.active {
+            background: #E67E22;
+            color: white;
+        }
+
+        /* ===== BOLD CONTINUE BUTTON ===== */
+        .button-container {
+            margin-top: 1rem;
+            width: 100%;
         }
 
         .btn-continue {
@@ -265,25 +381,83 @@
             background: #111;
             color: white;
             border: none;
-            padding: clamp(1rem, 3vh, 1.4rem) clamp(1rem, 3vw, 1.5rem);
-            font-size: clamp(1rem, 2.5vw, 1.1rem);
+            padding: 1.4rem 1.5rem;
+            font-size: 1.1rem;
             font-weight: 600;
             letter-spacing: 0.1em;
             text-transform: uppercase;
             cursor: pointer;
+            position: relative;
+            overflow: hidden;
             transition: all 0.4s ease;
+            box-shadow: 0 15px 30px -15px black;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 1rem;
         }
 
-        .btn-continue:hover {
-            background: #222;
-            transform: scale(1.02);
-            box-shadow: 0 25px 40px -20px black;
+        .btn-continue i {
+            font-size: 1.3rem;
+            transition: transform 0.3s;
         }
 
+        .btn-continue:hover:not(:disabled) {
+            background: #E67E22;
+            transform: scale(1.02);
+            box-shadow: 0 25px 40px -20px #E67E22;
+            letter-spacing: 0.15em;
+        }
+
+        .btn-continue:hover:not(:disabled) i {
+            transform: translateX(5px);
+        }
+
+        .btn-continue:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-continue::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+            transition: left 0.7s;
+        }
+
+        .btn-continue:hover::after {
+            left: 100%;
+        }
+
+        /* ===== BACK BUTTON ===== */
+        .nav-btn {
+            padding: 0.8rem 1.5rem;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #888;
+            font-weight: 500;
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            color: #E67E22;
+            transform: translateX(-3px);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.2;
+            cursor: not-allowed;
+        }
+
+        /* ===== TYPOGRAPHY ===== */
         h1 {
             font-size: clamp(2rem, 5vw, 3rem);
             font-weight: 300;
@@ -299,77 +473,130 @@
             letter-spacing: 0.25em;
             color: #666;
             margin-bottom: 2rem;
+            font-weight: 400;
         }
 
+        .text-gray-500 {
+            color: #444 !important;
+        }
+
+        /* ===== CREDIT BAR ===== */
+        .credit-bar-container {
+            margin-top: 2rem;
+        }
+
+        .credit-bar-track {
+            height: 2px;
+            width: 100%;
+            background: #f0f0f0;
+            position: relative;
+        }
+
+        .credit-bar-fill {
+            height: 2px;
+            background: #E67E22;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .credit-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.5rem;
+            font-size: 0.65rem;
+            color: #999;
+        }
+
+        /* ===== NOTIFICATION ===== */
+        .notification-container {
+            position: fixed;
+            top: 5rem;
+            right: 1rem;
+            z-index: 1000;
+        }
+
+        .notification {
+            background: white;
+            border-left: 4px solid #E67E22;
+            padding: 1rem 1.5rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            animation: slideIn 0.3s ease;
+            max-width: 300px;
+        }
+
+        .notification.success {
+            border-left-color: #2ecc71;
+        }
+
+        .notification.error {
+            border-left-color: #e74c3c;
+        }
+
+        .notification-icon {
+            color: #E67E22;
+            font-size: 1.2rem;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* ===== RESPONSIVE ===== */
         @media (max-width: 640px) {
-            .monolith-container {
-                bottom: 2vh;
-                right: 2vw;
-                width: min(150px, 25vw);
-                height: min(150px, 25vw);
-            }
-            
-            .main-container {
-                padding-top: 7rem;
-            }
+            .main-container { padding-top: 6rem; }
+            h1 { font-size: 2rem; }
+            .step { padding: 1.5rem; }
+            .top-panel { padding: 0.6rem 1.2rem 0.8rem; }
+            .no-hit-text { font-size: 0.7rem; }
+            .btn-continue { padding: 1.2rem; }
         }
     </style>
 </head>
 <body>
-    <!-- BURJ KHALIFA ARCHITECTURAL FRAME -->
-    <div class="arch-frame" id="archFrame">
-        <!-- Vertical mullions - 12 lines -->
-        <div class="vertical-mullion" style="left: 5%;"></div>
-        <div class="vertical-mullion" style="left: 15%;"></div>
-        <div class="vertical-mullion" style="left: 25%;"></div>
-        <div class="vertical-mullion" style="left: 35%;"></div>
-        <div class="vertical-mullion" style="left: 45%;"></div>
-        <div class="vertical-mullion" style="left: 55%;"></div>
-        <div class="vertical-mullion" style="left: 65%;"></div>
-        <div class="vertical-mullion" style="left: 75%;"></div>
-        <div class="vertical-mullion" style="left: 85%;"></div>
-        <div class="vertical-mullion" style="left: 95%;"></div>
-        
-        <!-- Horizontal bands - 3 levels -->
-        <div class="horizontal-band" style="top: 20%;"></div>
-        <div class="horizontal-band" style="top: 50%;"></div>
-        <div class="horizontal-band" style="top: 80%;"></div>
-        
-        <!-- Green accent lines - wealth signature -->
-        <div class="green-accent" style="left: 30%; top: 20%;"></div>
-        <div class="green-accent" style="left: 60%; top: 50%;"></div>
-        <div class="green-accent" style="left: 45%; top: 70%;"></div>
-        
-        <!-- Corner anchors -->
-        <div class="corner-anchor tl" style="top: 10%; left: 10%;"></div>
-        <div class="corner-anchor tr" style="top: 10%; right: 10%;"></div>
-        <div class="corner-anchor bl" style="bottom: 10%; left: 10%;"></div>
-        <div class="corner-anchor br" style="bottom: 10%; right: 10%;"></div>
+    <!-- Geometric Background -->
+    <div class="geometric-bg"></div>
+
+    <!-- Floating Particles -->
+    <div class="floating-particles">
+        <div class="particle"><svg viewBox="0 0 100 100"><rect x="20" y="20" width="60" height="60" rx="8" stroke="currentColor" fill="none" stroke-width="0.8"/><path d="M35 20 L35 80" stroke="currentColor" stroke-width="0.6"/><path d="M65 20 L65 80" stroke="currentColor" stroke-width="0.6"/><path d="M20 35 L80 35" stroke="currentColor" stroke-width="0.6"/><path d="M20 65 L80 65" stroke="currentColor" stroke-width="0.6"/><circle cx="30" cy="30" r="2" fill="rgba(17,17,17,0.4)"/><circle cx="70" cy="30" r="2" fill="rgba(17,17,17,0.4)"/></svg></div>
+        <div class="particle orange"><svg viewBox="0 0 100 100"><rect x="15" y="15" width="70" height="70" rx="12" stroke="currentColor" fill="none" stroke-width="0.9"/><path d="M30 15 L30 85" stroke="currentColor" stroke-width="0.7"/><path d="M70 15 L70 85" stroke="currentColor" stroke-width="0.7"/><path d="M15 30 L85 30" stroke="currentColor" stroke-width="0.7"/><path d="M15 70 L85 70" stroke="currentColor" stroke-width="0.7"/><circle cx="40" cy="40" r="2.5" fill="rgba(230,126,34,0.2)"/><circle cx="60" cy="60" r="2.5" fill="rgba(230,126,34,0.2)"/></svg></div>
+        <div class="particle grey"><svg viewBox="0 0 100 100"><rect x="25" y="25" width="50" height="50" rx="6" stroke="currentColor" fill="none" stroke-width="0.7"/><path d="M35 25 L35 75" stroke="currentColor" stroke-width="0.5"/><path d="M65 25 L65 75" stroke="currentColor" stroke-width="0.5"/><path d="M25 35 L75 35" stroke="currentColor" stroke-width="0.5"/><path d="M25 65 L75 65" stroke="currentColor" stroke-width="0.5"/><circle cx="45" cy="45" r="2" fill="rgba(102,102,102,0.3)"/><circle cx="55" cy="55" r="2" fill="rgba(102,102,102,0.3)"/></svg></div>
+        <div class="particle"><svg viewBox="0 0 100 100"><rect x="18" y="18" width="64" height="64" rx="10" stroke="currentColor" fill="none" stroke-width="0.8"/><path d="M32 18 L32 82" stroke="currentColor" stroke-width="0.6"/><path d="M68 18 L68 82" stroke="currentColor" stroke-width="0.6"/><path d="M18 32 L82 32" stroke="currentColor" stroke-width="0.6"/><path d="M18 68 L82 68" stroke="currentColor" stroke-width="0.6"/><circle cx="34" cy="34" r="2.2" fill="rgba(17,17,17,0.2)"/><circle cx="66" cy="66" r="2.2" fill="rgba(17,17,17,0.2)"/></svg></div>
     </div>
 
-    <!-- THREE.JS MONOLITH CONTAINER -->
-    <div class="monolith-container" id="monolith-container">
-        <canvas id="monolith-canvas"></canvas>
-    </div>
+    <!-- Notification Container -->
+    <div class="notification-container" id="notificationContainer"></div>
 
-    <!-- TOP PANEL -->
+    <!-- MERGED TOP PANEL -->
     <div class="top-panel">
-        <div class="flex items-center justify-between mb-2 flex-wrap gap-2">
-            <div class="flex items-center gap-2 text-sm">
-                <i class="ph ph-shield-check text-gray-400"></i>
-                <span class="text-white"><strong>NO CREDIT IMPACT</strong> · soft inquiry only</span>
+        <div class="panel-row">
+            <div class="no-hit-text">
+                <i class="ph ph-shield-check"></i>
+                <span><strong>NO CREDIT IMPACT</strong> · soft inquiry only</span>
             </div>
-            <div class="text-gray-400 text-sm" id="stepText">Step 1/4</div>
+            <div class="step-indicator-mini" id="stepText">Step 1/4</div>
         </div>
         <div class="panel-progress">
             <div class="panel-progress-fill" id="progressFill" style="width: 25%;"></div>
         </div>
     </div>
 
-    <!-- MAIN CONTENT -->
+    <!-- MAIN CONTAINER -->
     <div class="main-container">
+        <!-- Step Wrapper -->
         <div class="step-wrapper" id="stepWrapper">
-            <!-- STEP 1 -->
+            <!-- STEP 1 - Credit Score -->
             <div class="step active" id="step1">
                 <h1>Let's find your<br>best funding path.</h1>
                 <div class="subhead">credit profile</div>
@@ -406,17 +633,18 @@
                     </div>
                 </div>
 
-                <div class="mt-8">
-                    <div class="h-0.5 w-full bg-gray-100">
-                        <div class="h-0.5 bg-black" id="creditBar" style="width: 90%;"></div>
+                <!-- Credit bar -->
+                <div class="credit-bar-container">
+                    <div class="credit-bar-track">
+                        <div class="credit-bar-fill" id="creditBar" style="width: 90%;"></div>
                     </div>
-                    <div class="flex justify-between text-[0.55rem] text-gray-400 mt-1">
+                    <div class="credit-labels">
                         <span>500</span><span>600</span><span>700</span><span>800+</span>
                     </div>
                 </div>
             </div>
 
-            <!-- STEP 2 -->
+            <!-- STEP 2 - Primary Goal -->
             <div class="step" id="step2">
                 <h1>What is your<br>primary goal?</h1>
                 <div class="subhead">motivation</div>
@@ -465,57 +693,60 @@
                 </div>
             </div>
 
-            <!-- STEP 3 -->
+            <!-- STEP 3 - Details -->
             <div class="step" id="step3">
                 <h1>Just a few more<br>details...</h1>
                 <div class="subhead">financial fingerprint</div>
 
                 <div class="space-y-6">
-                    <div class="relative border-b border-gray-200">
-                        <span class="absolute left-0 bottom-3 text-gray-500">$</span>
-                        <input type="text" id="debt" placeholder=" " value="45,000" class="w-full border-none pl-6 pb-2 pt-2 text-xl outline-none">
-                        <label for="debt" class="absolute left-6 top-2 text-gray-400 text-sm transition-all pointer-events-none">Total debt</label>
+                    <div class="input-group">
+                        <span class="currency">$</span>
+                        <input type="text" id="debt" placeholder=" " value="45,000">
+                        <label for="debt">Total debt</label>
                     </div>
 
                     <div>
                         <p class="text-sm text-gray-500 mb-3">Are you a homeowner?</p>
-                        <div class="flex border border-gray-200 w-fit">
-                            <span class="px-8 py-3 cursor-pointer bg-black text-white" id="homeYes">Yes</span>
-                            <span class="px-8 py-3 cursor-pointer" id="homeNo">No</span>
+                        <div class="toggle-group">
+                            <span class="toggle-option active" id="homeYes">Yes</span>
+                            <span class="toggle-option" id="homeNo">No</span>
                         </div>
                     </div>
 
-                    <div class="relative border-b border-gray-200">
-                        <span class="absolute left-0 bottom-3 text-gray-500">$</span>
-                        <input type="text" id="income" placeholder=" " value="8,200" class="w-full border-none pl-6 pb-2 pt-2 text-xl outline-none">
-                        <label for="income" class="absolute left-6 top-2 text-gray-400 text-sm transition-all pointer-events-none">Monthly income</label>
+                    <div class="input-group">
+                        <span class="currency">$</span>
+                        <input type="text" id="income" placeholder=" " value="8,200">
+                        <label for="income">Monthly income</label>
                     </div>
                 </div>
             </div>
 
-            <!-- STEP 4 -->
+            <!-- STEP 4 - Confirmation -->
             <div class="step" id="step4">
                 <h1>Analysis in<br>Progress</h1>
                 <div class="subhead">final review</div>
-                <p class="text-gray-500 mb-8 text-sm">Our team is reviewing your profile against active capital-raising programs in Washington.</p>
+                <p class="text-gray-500 mb-8 text-sm">Our team is reviewing your profile against active capital-raising programs.</p>
 
+                <!-- Summary card -->
                 <div class="bg-gray-50 p-6 mb-8 border border-gray-100">
                     <div class="flex items-center gap-4">
                         <i class="ph ph-file-text text-2xl text-gray-500"></i>
                         <div>
-                            <div class="font-medium">740+ · Credit Card Debt</div>
-                            <div class="text-sm text-gray-500">Homeowner · $45k debt · $8.2k/mo</div>
+                            <div class="font-medium" id="summaryCredit">740+ · Credit Card Debt</div>
+                            <div class="text-sm text-gray-500" id="summaryDetails">Homeowner · $45k debt · $8.2k/mo</div>
                         </div>
                     </div>
                 </div>
 
+                <!-- Encryption badge -->
                 <div class="flex items-center gap-2 text-xs text-gray-500 mb-8">
                     <i class="ph ph-lock"></i>
-                    <span>256-bit encryption · never shared</span>
+                    <span>256-bit encryption · never shared with third parties</span>
                 </div>
             </div>
         </div>
 
+        <!-- BOLD BUTTON CONTAINER -->
         <div class="button-container">
             <button class="btn-continue" id="nextBtn">
                 <span>Continue</span>
@@ -523,235 +754,272 @@
             </button>
         </div>
 
+        <!-- Back button -->
         <div class="flex justify-center mt-4">
-            <button class="text-sm text-gray-400 hover:text-black px-4 py-2 disabled:opacity-20" id="prevBtn" disabled>← Back</button>
+            <button class="nav-btn" id="prevBtn" disabled>← Back</button>
         </div>
     </div>
 
-    <script>
-        // THREE.JS MONOLITH
-        (function() {
-            const container = document.getElementById('monolith-container');
-            const canvas = document.getElementById('monolith-canvas');
-            
-            // Scene setup
-            const scene = new THREE.Scene();
-            scene.background = null; // transparent
-            
-            const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 1000);
-            camera.position.set(2, 1.5, 3);
-            camera.lookAt(0, 0, 0);
-            
-            const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
-            renderer.setSize(300, 300);
-            renderer.setPixelRatio(window.devicePixelRatio);
-            
-            // Lighting
-            const ambientLight = new THREE.AmbientLight(0x404040);
-            scene.add(ambientLight);
-            
-            const dirLight = new THREE.DirectionalLight(0xffffff, 1);
-            dirLight.position.set(1, 2, 1);
-            scene.add(dirLight);
-            
-            const backLight = new THREE.DirectionalLight(0x444444, 0.5);
-            backLight.position.set(-1, -1, -1);
-            scene.add(backLight);
-            
-            // Materials
-            const metalMaterial = new THREE.MeshStandardMaterial({
-                color: 0x222222,
-                emissive: 0x111111,
-                roughness: 0.3,
-                metalness: 0.8,
-                emissiveIntensity: 0.2
-            });
-            
-            const edgeMaterial = new THREE.LineBasicMaterial({ color: 0x00A86B });
-            
-            // Geometry holder
-            let currentMesh = null;
-            let currentEdges = null;
-            
-            // Step geometries
-            function createGeometry(step) {
-                if (currentMesh) scene.remove(currentMesh);
-                if (currentEdges) scene.remove(currentEdges);
-                
-                let geometry;
-                
-                switch(step) {
-                    case 1: // Simple cube
-                        geometry = new THREE.BoxGeometry(1.2, 1.2, 1.2);
-                        break;
-                    case 2: // Icosahedron (more complex)
-                        geometry = new THREE.IcosahedronGeometry(0.9, 0);
-                        break;
-                    case 3: // Torus knot (growth & opportunity)
-                        geometry = new THREE.TorusKnotGeometry(0.6, 0.2, 64, 8, 2, 3);
-                        break;
-                    case 4: // Complex geometric form
-                        geometry = new THREE.OctahedronGeometry(0.9, 1);
-                        break;
-                    default:
-                        geometry = new THREE.BoxGeometry(1.2, 1.2, 1.2);
-                }
-                
-                // Main mesh
-                currentMesh = new THREE.Mesh(geometry, metalMaterial);
-                currentMesh.castShadow = true;
-                currentMesh.receiveShadow = true;
-                scene.add(currentMesh);
-                
-                // Edges (green highlights)
-                const edges = new THREE.EdgesGeometry(geometry);
-                currentEdges = new THREE.LineSegments(edges, edgeMaterial);
-                currentMesh.add(currentEdges); // Add edges as child so they move together
-            }
-            
-            // Initialize with step 1
-            createGeometry(1);
-            
-            // Animation
-            function animate() {
-                requestAnimationFrame(animate);
-                
-                if (currentMesh) {
-                    currentMesh.rotation.y += 0.005;
-                    currentMesh.rotation.x += 0.002;
-                }
-                
-                renderer.render(scene, camera);
-            }
-            
-            animate();
-            
-            // Handle resize
-            window.addEventListener('resize', () => {
-                const size = Math.min(300, window.innerWidth * 0.3);
-                renderer.setSize(size, size);
-                camera.aspect = 1;
-                camera.updateProjectionMatrix();
-            });
-            
-            // Expose for step changes
-            window.monolith = { createGeometry };
-        })();
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-analytics-compat.js"></script>
 
-        // Form functionality
-        (function() {
-            let currentStep = 1;
-            const steps = {
-                1: document.getElementById('step1'),
-                2: document.getElementById('step2'),
-                3: document.getElementById('step3'),
-                4: document.getElementById('step4')
+    <script>
+        // ====================
+        // FIREBASE INITIALIZATION
+        // ====================
+        console.log('🚀 Initializing Firebase...');
+        
+        // Your Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBrPHXqZvGD6Y9RoXUwarkg5AFjX8t7nJI",
+            authDomain: "intake-form-20a68.firebaseapp.com",
+            projectId: "intake-form-20a68",
+            storageBucket: "intake-form-20a68.firebasestorage.app",
+            messagingSenderId: "81594413185",
+            appId: "1:81594413185:web:8aad81f850a86517d9dd80",
+            measurementId: "G-3ETHQKK152"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const analytics = firebase.analytics();
+        const db = firebase.firestore();
+        
+        console.log('🔥 Firebase initialized successfully!');
+        console.log('📦 Firestore ready:', !!db);
+
+        // ====================
+        // FORM STATE MANAGEMENT
+        // ====================
+        let currentStep = 1;
+        let selectedScore = '740';
+        let selectedGoal = 'credit';
+        let homeOwner = true;
+        
+        // DOM Elements
+        const steps = {
+            1: document.getElementById('step1'),
+            2: document.getElementById('step2'),
+            3: document.getElementById('step3'),
+            4: document.getElementById('step4')
+        };
+        
+        const progressFill = document.getElementById('progressFill');
+        const stepText = document.getElementById('stepText');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+
+        // ====================
+        // UTILITY FUNCTIONS
+        // ====================
+        function showNotification(message, type = 'success') {
+            const container = document.getElementById('notificationContainer');
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            
+            const icons = {
+                success: 'ph-check-circle',
+                error: 'ph-x-circle',
+                warning: 'ph-warning',
+                info: 'ph-info'
             };
             
-            const progressFill = document.getElementById('progressFill');
-            const stepText = document.getElementById('stepText');
-            const prevBtn = document.getElementById('prevBtn');
-            const nextBtn = document.getElementById('nextBtn');
-
-            // Initialize selections
-            document.querySelector('#step1 .radio-card').classList.add('selected');
-            document.getElementById('creditBar').style.width = '90%';
+            notification.innerHTML = `
+                <i class="ph ${icons[type]} notification-icon"></i>
+                <span>${message}</span>
+            `;
             
-            // Pre-select first goal
-            const goalCards = document.querySelectorAll('#step2 .radio-card');
-            if (goalCards.length) goalCards[0].classList.add('selected');
+            container.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateX(100%)';
+                setTimeout(() => notification.remove(), 300);
+            }, 4000);
+        }
 
-            function goToStep(newStep) {
-                if (newStep < 1 || newStep > 4) return;
-
-                Object.values(steps).forEach(s => {
-                    s.classList.remove('active', 'exit-left');
-                });
-
-                steps[currentStep].classList.add('exit-left');
-
-                setTimeout(() => {
-                    Object.values(steps).forEach(s => s.classList.remove('exit-left'));
-                    steps[newStep].classList.add('active');
-                }, 60);
-
-                currentStep = newStep;
-                const percent = (currentStep / 4) * 100;
-                progressFill.style.width = percent + '%';
-                stepText.textContent = `Step ${currentStep}/4`;
+        function updateSummary() {
+            const summaryCredit = document.getElementById('summaryCredit');
+            const summaryDetails = document.getElementById('summaryDetails');
+            
+            if (summaryCredit && summaryDetails) {
+                const scoreText = {
+                    '740': '740+ (Excellent)',
+                    '680': '680-739 (Good)',
+                    '620': '620-679 (Fair)',
+                    'below': 'Below 620 (Challenged)'
+                }[selectedScore] || '740+ (Excellent)';
                 
-                // Update monolith geometry
-                if (window.monolith) {
-                    window.monolith.createGeometry(currentStep);
+                const goalText = {
+                    'credit': 'Credit Card Debt Recovery',
+                    'home': 'Homeowner Equity Release',
+                    'business': 'Business Growth Capital',
+                    'consolidate': 'General Debt Consolidation'
+                }[selectedGoal] || 'Credit Card Debt Recovery';
+                
+                summaryCredit.textContent = `${scoreText} · ${goalText}`;
+                
+                const debt = document.getElementById('debt')?.value || '45,000';
+                const income = document.getElementById('income')?.value || '8,200';
+                const homeStatus = homeOwner ? 'Homeowner' : 'Not a homeowner';
+                
+                summaryDetails.textContent = `${homeStatus} · $${debt} debt · $${income}/mo`;
+            }
+        }
+
+        // ====================
+        // NAVIGATION FUNCTIONS
+        // ====================
+        function goToStep(newStep) {
+            if (newStep < 1 || newStep > 4) return;
+
+            Object.values(steps).forEach(s => {
+                s.classList.remove('active', 'exit-left');
+            });
+
+            steps[currentStep].classList.add('exit-left');
+
+            setTimeout(() => {
+                Object.values(steps).forEach(s => s.classList.remove('exit-left'));
+                steps[newStep].classList.add('active');
+            }, 60);
+
+            currentStep = newStep;
+            const percent = (currentStep / 4) * 100;
+            progressFill.style.width = percent + '%';
+            stepText.textContent = `Step ${currentStep}/4`;
+
+            prevBtn.disabled = currentStep === 1;
+
+            if (currentStep === 4) {
+                nextBtn.innerHTML = '<span>Submit request</span><i class="ph ph-check"></i>';
+                updateSummary();
+            } else {
+                nextBtn.innerHTML = '<span>Continue</span><i class="ph ph-arrow-right"></i>';
+            }
+        }
+
+        // ====================
+        // FIREBASE SUBMISSION FUNCTION
+        // ====================
+        async function saveToFirebase(formData) {
+            try {
+                const docRef = await db.collection('intakeSubmissions').add({
+                    ...formData,
+                    submittedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    userAgent: navigator.userAgent,
+                    status: 'pending'
+                });
+                
+                console.log('✅ Form saved to Firebase with ID:', docRef.id);
+                return { success: true, id: docRef.id };
+            } catch (error) {
+                console.error('❌ Firebase error:', error);
+                return { success: false, error };
+            }
+        }
+
+        // ====================
+        // EVENT LISTENERS
+        // ====================
+        
+        // Radio card selection
+        document.querySelectorAll('.radio-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const parentStep = this.closest('.step');
+                if (!parentStep) return;
+
+                parentStep.querySelectorAll('.radio-card').forEach(c => c.classList.remove('selected'));
+                this.classList.add('selected');
+
+                if (parentStep.id === 'step1') {
+                    selectedScore = this.dataset.score;
+                    let width = '0%';
+                    if (selectedScore === '740') width = '90%';
+                    else if (selectedScore === '680') width = '70%';
+                    else if (selectedScore === '620') width = '40%';
+                    else width = '15%';
+                    document.getElementById('creditBar').style.width = width;
+                } else if (parentStep.id === 'step2') {
+                    selectedGoal = this.dataset.goal;
                 }
+            });
+        });
 
-                prevBtn.disabled = currentStep === 1;
+        // Homeowner toggle
+        document.getElementById('homeYes')?.addEventListener('click', function() {
+            this.classList.add('active');
+            document.getElementById('homeNo').classList.remove('active');
+            homeOwner = true;
+        });
+        
+        document.getElementById('homeNo')?.addEventListener('click', function() {
+            this.classList.add('active');
+            document.getElementById('homeYes').classList.remove('active');
+            homeOwner = false;
+        });
 
-                if (currentStep === 4) {
-                    nextBtn.innerHTML = '<span>Submit request</span><i class="ph ph-check"></i>';
+        // Navigation
+        nextBtn.addEventListener('click', async () => {
+            if (currentStep < 4) {
+                // Step validation
+                if (currentStep === 1 && !document.querySelector('#step1 .radio-card.selected')) {
+                    showNotification('Please select your credit range', 'warning');
+                    return;
+                }
+                if (currentStep === 2 && !document.querySelector('#step2 .radio-card.selected')) {
+                    showNotification('Please select a goal', 'warning');
+                    return;
+                }
+                goToStep(currentStep + 1);
+            } else {
+                // FINAL SUBMIT - Save to Firebase
+                const formData = {
+                    creditScore: selectedScore,
+                    primaryGoal: selectedGoal,
+                    debtAmount: document.getElementById('debt')?.value || '',
+                    isHomeowner: homeOwner,
+                    monthlyIncome: document.getElementById('income')?.value || '',
+                    timestamp: new Date().toISOString()
+                };
+                
+                // Show loading state
+                nextBtn.innerHTML = '<span>Saving...</span><i class="ph ph-spinner ph-spin"></i>';
+                nextBtn.disabled = true;
+                
+                // Save to Firebase
+                const result = await saveToFirebase(formData);
+                
+                if (result.success) {
+                    showNotification('✅ Form submitted successfully!', 'success');
+                    nextBtn.innerHTML = '<span>Submitted!</span><i class="ph ph-check"></i>';
+                    
+                    // Optional: redirect after 2 seconds
+                    // setTimeout(() => {
+                    //     window.location.href = 'thank-you.html';
+                    // }, 2000);
                 } else {
-                    nextBtn.innerHTML = '<span>Continue</span><i class="ph ph-arrow-right"></i>';
+                    showNotification('Error submitting form. Please try again.', 'error');
+                    nextBtn.innerHTML = '<span>Submit request</span><i class="ph ph-check"></i>';
+                    nextBtn.disabled = false;
                 }
             }
+        });
 
-            // Radio card selection
-            document.querySelectorAll('.radio-card').forEach(card => {
-                card.addEventListener('click', function() {
-                    const parentStep = this.closest('.step');
-                    if (!parentStep) return;
+        prevBtn.addEventListener('click', () => {
+            if (currentStep > 1) goToStep(currentStep - 1);
+        });
 
-                    parentStep.querySelectorAll('.radio-card').forEach(c => c.classList.remove('selected'));
-                    this.classList.add('selected');
-
-                    if (parentStep.id === 'step1') {
-                        const score = this.dataset.score;
-                        let width = '0%';
-                        if (score === '740') width = '90%';
-                        else if (score === '680') width = '70%';
-                        else if (score === '620') width = '40%';
-                        else width = '15%';
-                        document.getElementById('creditBar').style.width = width;
-                    }
-                });
-            });
-
-            // Toggle
-            document.getElementById('homeYes').addEventListener('click', function() {
-                this.classList.add('bg-black', 'text-white');
-                document.getElementById('homeNo').classList.remove('bg-black', 'text-white');
-            });
-            document.getElementById('homeNo').addEventListener('click', function() {
-                this.classList.add('bg-black', 'text-white');
-                document.getElementById('homeYes').classList.remove('bg-black', 'text-white');
-            });
-
-            // Navigation
-            nextBtn.addEventListener('click', () => {
-                if (currentStep < 4) {
-                    if (currentStep === 1 && !document.querySelector('#step1 .radio-card.selected')) {
-                        alert('Please select your credit range');
-                        return;
-                    }
-                    if (currentStep === 2 && !document.querySelector('#step2 .radio-card.selected')) {
-                        alert('Please select a goal');
-                        return;
-                    }
-                    goToStep(currentStep + 1);
-                } else {
-                    nextBtn.innerHTML = '<span>Processing...</span><i class="ph ph-spinner ph-spin"></i>';
-                    setTimeout(() => {
-                        alert('Form submitted (demo) — thank you');
-                        nextBtn.innerHTML = '<span>Submit request</span><i class="ph ph-check"></i>';
-                    }, 800);
-                }
-            });
-
-            prevBtn.addEventListener('click', () => {
-                if (currentStep > 1) goToStep(currentStep - 1);
-            });
-
-            goToStep(1);
-        })();
+        // Initialize with step 1 selected
+        document.querySelector('#step1 .radio-card')?.classList.add('selected');
+        const goalCards = document.querySelectorAll('#step2 .radio-card');
+        if (goalCards.length) goalCards[0].classList.add('selected');
+        
+        goToStep(1);
+        
+        console.log('✅ Form initialized and ready for Firebase submissions!');
     </script>
 </body>
 </html>

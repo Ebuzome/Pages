@@ -4,16 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>ÆTHOS · capital intake</title>
-    
-    <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
-    
-    <!-- Three.js for 3D Monolith -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    
     <style>
-        /* ===== RESET & BASE ===== */
         * {
             margin: 0;
             padding: 0;
@@ -31,7 +25,6 @@
             -moz-osx-font-smoothing: grayscale;
         }
 
-        /* ===== GEOMETRIC BACKGROUND PATTERNS ===== */
         .geometric-bg {
             position: fixed;
             top: 0;
@@ -76,7 +69,6 @@
             z-index: 0;
         }
 
-        /* ===== FLOATING PARTICLES ===== */
         .floating-particles {
             position: fixed;
             top: 0;
@@ -126,7 +118,6 @@
             100% { transform: translate(0, 0) rotate(0deg); }
         }
 
-        /* ===== THREE.JS MONOLITH CONTAINER ===== */
         .monolith-container {
             position: fixed;
             bottom: 5vh;
@@ -145,7 +136,6 @@
             border-radius: 4px;
         }
 
-        /* ===== MAIN CONTAINER ===== */
         .main-container {
             position: relative;
             z-index: 20;
@@ -158,7 +148,6 @@
             justify-content: center;
         }
 
-        /* ===== MERGED TOP PANEL ===== */
         .top-panel {
             position: fixed;
             top: 1.2rem;
@@ -223,7 +212,6 @@
             transition: width 0.8s cubic-bezier(0.2, 0.9, 0.3, 1);
         }
 
-        /* ===== STEP WRAPPER ===== */
         .step-wrapper {
             position: relative;
             width: 100%;
@@ -264,7 +252,6 @@
             pointer-events: none;
         }
 
-        /* ===== RADIO CARDS ===== */
         .radio-card {
             padding: 1.5rem;
             margin-bottom: 0.8rem;
@@ -325,7 +312,6 @@
             100% { transform: translate(-50%, -50%) scale(1); }
         }
 
-        /* ===== INPUT FIELDS ===== */
         .input-group {
             margin-bottom: 2.2rem;
             position: relative;
@@ -370,7 +356,6 @@
             font-weight: 400;
         }
 
-        /* ===== TOGGLE ===== */
         .toggle-group {
             display: flex;
             border: 1.5px solid #ddd;
@@ -392,7 +377,6 @@
             color: white;
         }
 
-        /* ===== BOLD CONTINUE BUTTON ===== */
         .button-container {
             margin-top: 1rem;
             width: 100%;
@@ -455,7 +439,6 @@
             left: 100%;
         }
 
-        /* ===== BACK BUTTON ===== */
         .nav-btn {
             padding: 0.8rem 1.5rem;
             font-size: 0.8rem;
@@ -479,7 +462,6 @@
             cursor: not-allowed;
         }
 
-        /* ===== TYPOGRAPHY ===== */
         h1 {
             font-size: clamp(2rem, 5vw, 3rem);
             font-weight: 300;
@@ -502,7 +484,6 @@
             color: #444 !important;
         }
 
-        /* ===== CREDIT BAR ===== */
         .credit-bar-container {
             margin-top: 2rem;
         }
@@ -529,7 +510,6 @@
             color: #999;
         }
 
-        /* ===== NOTIFICATION ===== */
         .notification-container {
             position: fixed;
             top: 5rem;
@@ -574,7 +554,6 @@
             }
         }
 
-        /* ===== RESPONSIVE ===== */
         @media (max-width: 640px) {
             .main-container { padding-top: 6rem; }
             h1 { font-size: 2rem; }
@@ -592,10 +571,8 @@
     </style>
 </head>
 <body>
-    <!-- Geometric Background -->
     <div class="geometric-bg"></div>
 
-    <!-- Floating Particles -->
     <div class="floating-particles">
         <div class="particle"><svg viewBox="0 0 100 100"><rect x="20" y="20" width="60" height="60" rx="8" stroke="currentColor" fill="none" stroke-width="0.8"/><path d="M35 20 L35 80" stroke="currentColor" stroke-width="0.6"/><path d="M65 20 L65 80" stroke="currentColor" stroke-width="0.6"/><path d="M20 35 L80 35" stroke="currentColor" stroke-width="0.6"/><path d="M20 65 L80 65" stroke="currentColor" stroke-width="0.6"/><circle cx="30" cy="30" r="2" fill="rgba(17,17,17,0.4)"/><circle cx="70" cy="30" r="2" fill="rgba(17,17,17,0.4)"/></svg></div>
         <div class="particle orange"><svg viewBox="0 0 100 100"><rect x="15" y="15" width="70" height="70" rx="12" stroke="currentColor" fill="none" stroke-width="0.9"/><path d="M30 15 L30 85" stroke="currentColor" stroke-width="0.7"/><path d="M70 15 L70 85" stroke="currentColor" stroke-width="0.7"/><path d="M15 30 L85 30" stroke="currentColor" stroke-width="0.7"/><path d="M15 70 L85 70" stroke="currentColor" stroke-width="0.7"/><circle cx="40" cy="40" r="2.5" fill="rgba(230,126,34,0.2)"/><circle cx="60" cy="60" r="2.5" fill="rgba(230,126,34,0.2)"/></svg></div>
@@ -603,15 +580,12 @@
         <div class="particle"><svg viewBox="0 0 100 100"><rect x="18" y="18" width="64" height="64" rx="10" stroke="currentColor" fill="none" stroke-width="0.8"/><path d="M32 18 L32 82" stroke="currentColor" stroke-width="0.6"/><path d="M68 18 L68 82" stroke="currentColor" stroke-width="0.6"/><path d="M18 32 L82 32" stroke="currentColor" stroke-width="0.6"/><path d="M18 68 L82 68" stroke="currentColor" stroke-width="0.6"/><circle cx="34" cy="34" r="2.2" fill="rgba(17,17,17,0.2)"/><circle cx="66" cy="66" r="2.2" fill="rgba(17,17,17,0.2)"/></svg></div>
     </div>
 
-    <!-- THREE.JS MONOLITH CONTAINER -->
     <div class="monolith-container" id="monolith-container">
         <canvas id="monolith-canvas"></canvas>
     </div>
 
-    <!-- Notification Container -->
     <div class="notification-container" id="notificationContainer"></div>
 
-    <!-- MERGED TOP PANEL -->
     <div class="top-panel">
         <div class="panel-row">
             <div class="no-hit-text">
@@ -625,11 +599,8 @@
         </div>
     </div>
 
-    <!-- MAIN CONTAINER -->
     <div class="main-container">
-        <!-- Step Wrapper -->
         <div class="step-wrapper" id="stepWrapper">
-            <!-- STEP 1 - Credit Score -->
             <div class="step active" id="step1">
                 <h1>Let's find your<br>best funding path.</h1>
                 <div class="subhead">credit profile</div>
@@ -666,7 +637,6 @@
                     </div>
                 </div>
 
-                <!-- Credit bar -->
                 <div class="credit-bar-container">
                     <div class="credit-bar-track">
                         <div class="credit-bar-fill" id="creditBar" style="width: 90%;"></div>
@@ -677,7 +647,6 @@
                 </div>
             </div>
 
-            <!-- STEP 2 - Primary Goal -->
             <div class="step" id="step2">
                 <h1>What is your<br>primary goal?</h1>
                 <div class="subhead">motivation</div>
@@ -726,7 +695,6 @@
                 </div>
             </div>
 
-            <!-- STEP 3 - Details -->
             <div class="step" id="step3">
                 <h1>Just a few more<br>details...</h1>
                 <div class="subhead">financial fingerprint</div>
@@ -754,13 +722,11 @@
                 </div>
             </div>
 
-            <!-- STEP 4 - Confirmation -->
             <div class="step" id="step4">
                 <h1>Analysis in<br>Progress</h1>
                 <div class="subhead">final review</div>
                 <p class="text-gray-500 mb-8 text-sm">Our team is reviewing your profile against active capital-raising programs.</p>
 
-                <!-- Summary card -->
                 <div class="bg-gray-50 p-6 mb-8 border border-gray-100">
                     <div class="flex items-center gap-4">
                         <i class="ph ph-file-text text-2xl text-gray-500"></i>
@@ -771,7 +737,6 @@
                     </div>
                 </div>
 
-                <!-- Encryption badge -->
                 <div class="flex items-center gap-2 text-xs text-gray-500 mb-8">
                     <i class="ph ph-lock"></i>
                     <span>256-bit encryption · never shared with third parties</span>
@@ -779,7 +744,6 @@
             </div>
         </div>
 
-        <!-- BOLD BUTTON CONTAINER -->
         <div class="button-container">
             <button class="btn-continue" id="nextBtn">
                 <span>Continue</span>
@@ -787,28 +751,22 @@
             </button>
         </div>
 
-        <!-- Back button -->
         <div class="flex justify-center mt-4">
             <button class="nav-btn" id="prevBtn" disabled>← Back</button>
         </div>
     </div>
 
-    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-analytics-compat.js"></script>
 
     <script>
-        // ====================
-        // THREE.JS MONOLITH - EVOLVING 3D GEOMETRY
-        // ====================
         (function() {
             const container = document.getElementById('monolith-container');
             const canvas = document.getElementById('monolith-canvas');
             
             if (!container || !canvas) return;
             
-            // Scene setup
             const scene = new THREE.Scene();
             scene.background = null;
             
@@ -820,7 +778,6 @@
             renderer.setSize(300, 300);
             renderer.setPixelRatio(window.devicePixelRatio);
             
-            // Lighting
             const ambientLight = new THREE.AmbientLight(0x404040);
             scene.add(ambientLight);
             
@@ -832,7 +789,6 @@
             backLight.position.set(-1, -1, -1);
             scene.add(backLight);
             
-            // Materials
             const metalMaterial = new THREE.MeshStandardMaterial({
                 color: 0x222222,
                 emissive: 0x111111,
@@ -843,11 +799,9 @@
             
             const edgeMaterial = new THREE.LineBasicMaterial({ color: 0xE67E22 });
             
-            // Geometry holder
             let currentMesh = null;
             let currentEdges = null;
             
-            // Step geometries
             function createGeometry(step) {
                 if (currentMesh) scene.remove(currentMesh);
                 if (currentEdges) scene.remove(currentEdges);
@@ -855,38 +809,34 @@
                 let geometry;
                 
                 switch(step) {
-                    case 1: // Simple cube
+                    case 1:
                         geometry = new THREE.BoxGeometry(1.2, 1.2, 1.2);
                         break;
-                    case 2: // Icosahedron (more complex)
+                    case 2:
                         geometry = new THREE.IcosahedronGeometry(0.9, 0);
                         break;
-                    case 3: // Torus knot (growth & opportunity)
+                    case 3:
                         geometry = new THREE.TorusKnotGeometry(0.6, 0.2, 64, 8, 2, 3);
                         break;
-                    case 4: // Complex geometric form
+                    case 4:
                         geometry = new THREE.OctahedronGeometry(0.9, 1);
                         break;
                     default:
                         geometry = new THREE.BoxGeometry(1.2, 1.2, 1.2);
                 }
                 
-                // Main mesh
                 currentMesh = new THREE.Mesh(geometry, metalMaterial);
                 currentMesh.castShadow = true;
                 currentMesh.receiveShadow = true;
                 scene.add(currentMesh);
                 
-                // Edges (orange highlights)
                 const edges = new THREE.EdgesGeometry(geometry);
                 currentEdges = new THREE.LineSegments(edges, edgeMaterial);
                 currentMesh.add(currentEdges);
             }
             
-            // Initialize with step 1
             createGeometry(1);
             
-            // Animation
             function animate() {
                 requestAnimationFrame(animate);
                 
@@ -900,7 +850,6 @@
             
             animate();
             
-            // Handle resize
             window.addEventListener('resize', () => {
                 const size = Math.min(300, window.innerWidth * 0.3);
                 renderer.setSize(size, size);
@@ -908,13 +857,9 @@
                 camera.updateProjectionMatrix();
             });
             
-            // Expose for step changes
             window.monolith = { createGeometry };
         })();
 
-        // ====================
-        // FIREBASE INITIALIZATION
-        // ====================
         console.log('🚀 Initializing Firebase...');
         
         const firebaseConfig = {
@@ -933,12 +878,8 @@
         
         console.log('🔥 Firebase initialized successfully!');
 
-        // ====================
-        // IP ADDRESS TRACKING - ADVANCED
-        // ====================
         async function getDetailedIPInfo() {
             try {
-                // Using ipapi.co - free tier
                 const response = await fetch('https://ipapi.co/json/');
                 const data = await response.json();
                 
@@ -958,7 +899,6 @@
                 };
             } catch (error) {
                 console.error('Error getting IP details:', error);
-                // Fallback to simple IP
                 try {
                     const simpleResponse = await fetch('https://api.ipify.org?format=json');
                     const simpleData = await simpleResponse.json();
@@ -988,12 +928,8 @@
             }
         }
 
-        // ====================
-        // DUPLICATE CHECK BY IP
-        // ====================
         async function checkForDuplicateIP(ipAddress) {
             try {
-                // Check if this IP has submitted in the last 24 hours
                 const oneDayAgo = new Date();
                 oneDayAgo.setDate(oneDayAgo.getDate() - 1);
                 
@@ -1009,15 +945,11 @@
             }
         }
 
-        // ====================
-        // FORM STATE MANAGEMENT
-        // ====================
         let currentStep = 1;
         let selectedScore = '740';
         let selectedGoal = 'credit';
         let homeOwner = true;
         
-        // DOM Elements
         const steps = {
             1: document.getElementById('step1'),
             2: document.getElementById('step2'),
@@ -1030,9 +962,6 @@
         const prevBtn = document.getElementById('prevBtn');
         const nextBtn = document.getElementById('nextBtn');
 
-        // ====================
-        // UTILITY FUNCTIONS
-        // ====================
         function showNotification(message, type = 'success') {
             const container = document.getElementById('notificationContainer');
             const notification = document.createElement('div');
@@ -1088,20 +1017,14 @@
             }
         }
 
-        // ====================
-        // FIREBASE SUBMISSION WITH IP TRACKING
-        // ====================
         async function saveToFirebase(formData) {
             try {
-                // Get IP info before saving
                 const ipInfo = await getDetailedIPInfo();
                 
                 const docRef = await db.collection('intakeSubmissions').add({
                     ...formData,
-                    // Timestamps
                     submittedAt: firebase.firestore.FieldValue.serverTimestamp(),
                     clientTimestamp: new Date().toISOString(),
-                    // IP Information
                     ipAddress: ipInfo.ipAddress,
                     ipCity: ipInfo.ipCity,
                     ipRegion: ipInfo.ipRegion,
@@ -1114,13 +1037,11 @@
                     ipASN: ipInfo.ipASN,
                     ipCountryCode: ipInfo.ipCountryCode,
                     ipContinent: ipInfo.ipContinent,
-                    // Browser info
                     userAgent: navigator.userAgent,
                     language: navigator.language,
                     platform: navigator.platform,
                     screenSize: `${window.screen.width}x${window.screen.height}`,
                     referrer: document.referrer || 'direct',
-                    // Status
                     status: 'pending'
                 });
                 
@@ -1134,9 +1055,6 @@
             }
         }
 
-        // ====================
-        // NAVIGATION FUNCTIONS
-        // ====================
         function goToStep(newStep) {
             if (newStep < 1 || newStep > 4) return;
 
@@ -1156,7 +1074,6 @@
             progressFill.style.width = percent + '%';
             stepText.textContent = `Step ${currentStep}/4`;
 
-            // Update monolith geometry
             if (window.monolith) {
                 window.monolith.createGeometry(currentStep);
             }
@@ -1171,11 +1088,6 @@
             }
         }
 
-        // ====================
-        // EVENT LISTENERS
-        // ====================
-        
-        // Radio card selection
         document.querySelectorAll('.radio-card').forEach(card => {
             card.addEventListener('click', function() {
                 const parentStep = this.closest('.step');
@@ -1198,7 +1110,6 @@
             });
         });
 
-        // Homeowner toggle
         document.getElementById('homeYes')?.addEventListener('click', function() {
             this.classList.add('active');
             document.getElementById('homeNo').classList.remove('active');
@@ -1211,10 +1122,8 @@
             homeOwner = false;
         });
 
-        // Navigation
         nextBtn.addEventListener('click', async () => {
             if (currentStep < 4) {
-                // Step validation
                 if (currentStep === 1 && !document.querySelector('#step1 .radio-card.selected')) {
                     showNotification('Please select your credit range', 'warning');
                     return;
@@ -1225,16 +1134,11 @@
                 }
                 goToStep(currentStep + 1);
             } else {
-                // FINAL SUBMIT - Save to Firebase with IP tracking
-                
-                // Show loading state
                 nextBtn.innerHTML = '<span>Saving...</span><i class="ph ph-spinner ph-spin"></i>';
                 nextBtn.disabled = true;
                 
-                // Get IP info first
                 const ipInfo = await getDetailedIPInfo();
                 
-                // Check for duplicates
                 const isDuplicate = await checkForDuplicateIP(ipInfo.ipAddress);
                 
                 if (isDuplicate) {
@@ -1244,14 +1148,12 @@
                     return;
                 }
                 
-                // Prepare form data
                 const formData = {
                     creditScore: selectedScore,
                     primaryGoal: selectedGoal,
                     debtAmount: document.getElementById('debt')?.value || '',
                     isHomeowner: homeOwner,
                     monthlyIncome: document.getElementById('income')?.value || '',
-                    // Browser info
                     userAgent: navigator.userAgent,
                     language: navigator.language,
                     platform: navigator.platform,
@@ -1259,17 +1161,11 @@
                     referrer: document.referrer || 'direct'
                 };
                 
-                // Save to Firebase
                 const result = await saveToFirebase(formData);
                 
                 if (result.success) {
                     showNotification(`✅ Form submitted! IP: ${result.ip}`, 'success');
                     nextBtn.innerHTML = '<span>Submitted!</span><i class="ph ph-check"></i>';
-                    
-                    // Optional: redirect after 2 seconds
-                    // setTimeout(() => {
-                    //     window.location.href = 'thank-you.html';
-                    // }, 2000);
                 } else {
                     showNotification('Error submitting form. Please try again.', 'error');
                     nextBtn.innerHTML = '<span>Submit request</span><i class="ph ph-check"></i>';
@@ -1282,7 +1178,6 @@
             if (currentStep > 1) goToStep(currentStep - 1);
         });
 
-        // Initialize with step 1 selected
         document.querySelector('#step1 .radio-card')?.classList.add('selected');
         const goalCards = document.querySelectorAll('#step2 .radio-card');
         if (goalCards.length) goalCards[0].classList.add('selected');
